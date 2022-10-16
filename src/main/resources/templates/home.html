@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <title>홈</title>
+</head>
+<body>
+    <div class="container text-center">
+        <form id="frm">
+            <div class="row">
+                <div class="col-4">
+                    <label for="title">제목</label>
+                    <input class="form-control" id="title" name="title" type="text">
+                </div>
+                <div class="col-4">
+                    <label for="content">내용</label>
+                    <input class="form-control" type="text" name="content" id="content">
+                </div>
+                <input class="col-4 btn btn-secondary" type="button" id="add" value="추가">
+            </div>
+        </form>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#add').on('click',function(){
+                if(!check()){
+                    alert("빈칸을 채워주세요");
+                    return;
+                }
+                let serializeArray = $('#frm').serializeArray();
+                let form = {};
+                $.each(serializeArray, function (i,v) {
+                    form[v.name] = v.value;
+                });
+                $.ajax({
+                    url:"/todo/api/insert",
+                    type:"post",
+                    contentType:"application/json; charset=UTF-8",
+                    data:JSON.stringify(form),
+                    success : function (data) {
+                        alert("삽입");
+                        location.reload();
+                    },
+                    error:function() {
+                        alert("실패");
+                    }
+                })
+            })
+        })
+
+        function check() {
+            let flag = true;
+            $('#frm').find("input").not('#add').each(function () {
+                if($(this).val().length < 1){
+                    flag = false;
+                }
+            })
+            return flag;
+        }
+    </script>
+</body>
+</html>
